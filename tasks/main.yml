@@ -1,6 +1,9 @@
 ---
 # tasks file for ansible-role-awscli
 
+- name: Install PIP
+  apt: name=python-pip
+
 - name: Install AWS CLI from PIP
   pip: name="awscli"
 
