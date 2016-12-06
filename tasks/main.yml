@@ -1,0 +1,7 @@
+---
+# tasks file for ansible-role-awscli
+
+- name: Install AWS CLI from PIP
+  pip: name="awscli"
+
+# vim: set ft=ansible:set noet:ts=2:ws=2:
