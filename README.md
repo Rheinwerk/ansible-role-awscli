@@ -1,19 +1,19 @@
 AWS CLI Tools
 =========
 
-This role downloads and installs the AWS CLI Tools via Python pip.
+This role installs the AWS CLI Tools using Python pip.
 
 [![Build Status](https://travis-ci.org/Rheinwerk/ansible-role-awscli.svg?branch=master)](https://travis-ci.org/Rheinwerk/ansible-role-awscli)
 
 Requirements
 ------------
 
-None.
+Python and pip must be installed.
 
 Role Variables
 --------------
 
-Please see `defaults/main.yml` for details.
+No variables.
 
 Dependencies
 ------------
@@ -23,16 +23,9 @@ None.
 Example Playbook
 ----------------
 
-The general contract of this role is to take the variables map `_awscli` from `defaults/main.yml` as a template for your configuration and pass that configuration as a parameter to this role.
-
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
     - hosts: servers
-      var:
-        AWSCLI:
-          ...
       roles:
-         - { role: awscli, tags: [ 'awscli' ], _awscli: "{{ AWSCLI }}" }
+         - { role: awscli }
 
 License
 -------
