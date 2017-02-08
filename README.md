@@ -25,7 +25,7 @@ Example Playbook
 
     - hosts: servers
       roles:
-         - { role: awscli }
+         - { role: awscli, tags: [ 'awscli' ] }
 
 License
 -------
