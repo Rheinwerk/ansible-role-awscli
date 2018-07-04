@@ -2,4 +2,3 @@
 # defaults file for ansible-role-awscli
 
 _awscli: {}
-
