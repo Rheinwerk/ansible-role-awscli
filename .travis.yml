@@ -1,10 +1,13 @@
 ---
 language: python
-python: "2.7"
-
-# Use the new container infrastructure
-sudo: required
-dist: trusty
+python:
+  - "2.7"
+  - "3.7"
+  - "3.8"
+env:
+  - ANSIBLE_PIP='ansible>=2.8,<2.9'
+  - ANSIBLE_PIP='ansible>=2.9,<3.0'
+dist: bionic
 
 # Install ansible
 addons:
@@ -14,7 +17,7 @@ addons:
 
 install:
   # Install ansible
-  - pip install ansible
+  - pip install "$ANSIBLE_PIP"
   - pip install yamllint
 
     # Check ansible version
