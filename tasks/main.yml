@@ -2,7 +2,7 @@
 # tasks file for ansible-role-awscli
 
 - name: Install PIP
-  apt: name=python-pip
+  apt: name="{{ 'python-pip' if ansible_distribution_version in ['14.04', '18.04'] else 'python3-pip' }}"
 
 - name: Install AWS CLI from PIP
   pip: name="awscli"
