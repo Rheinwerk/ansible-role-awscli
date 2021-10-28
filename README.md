@@ -3,7 +3,7 @@ AWS CLI Tools
 
 This role installs the AWS CLI Tools using Python pip.
 
-[![Build Status](https://travis-ci.org/Rheinwerk/ansible-role-awscli.svg?branch=master)](https://travis-ci.org/Rheinwerk/ansible-role-awscli)
+[![Build Status](https://github.com/Rheinwerk/ansible-role-awscli/actions/workflows/ci.yml/badge.svg)](https://github.com/Rheinwerk/ansible-role-awscli/actions/workflows/ci.yml)
 
 Requirements
 ------------
