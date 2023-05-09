@@ -1,12 +1,12 @@
 ---
 # tasks file for ansible-role-awscli
 - name: Install PIP
-  apt:
+  ansible.builtin.apt:
     name: python3-pip
     state: present
 
 - name: Install AWS CLI from PIP
-  pip:
+  ansible.builtin.pip:
     name: awscli
 
 # vim: set ft=ansible:set noet:ts=2:ws=2:
