@@ -1,5 +1,5 @@
 - name: Check AWS CLI status
-  ansible.builtin.command: aws --version
+  ansible.builtin.shell: |
     set -o pipefail
     if ! aws --version | grep -c aws-cli/{{ _awscli_version }}; then
       echo 'install required'
