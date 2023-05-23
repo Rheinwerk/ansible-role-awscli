@@ -1,0 +1,3 @@
+---
+# Docker's default options for a tmpfs include noexec, therefore we use /opt as a workaround
+executable_temp_dir: /opt/

@@ -1,12 +1,52 @@
----
-# tasks file for ansible-role-awscli
-- name: Install PIP
-  ansible.builtin.apt:
-    name: python3-pip
-    state: present
+- name: Check AWS CLI status
+  ansible.builtin.shell: |
+    set -o pipefail
+    if ! aws --version | grep -c aws-cli/{{ _awscli_version }}; then
+      echo 'install required'
+    fi
+  args:
+    executable: /bin/bash
+  register: awscli_status
+  changed_when: false
+  tags: awscli
 
-- name: Install AWS CLI from PIP
-  ansible.builtin.pip:
-    name: awscli
+- name: Install AWS CLI block
+  when: "'install required' in awscli_status.stdout"
+  tags: awscli
+  block:
+    - name: Install requirements
+      ansible.builtin.apt:
+        pkg:
+        - libc6
+        - groff
+        - less
 
-# vim: set ft=ansible:set noet:ts=2:ws=2:
+    - name: Create temporary directory
+      ansible.builtin.tempfile:
+        path: "{{ executable_temp_dir | d(omit) }}"
+        state: directory
+        suffix: awscli
+      register: temp_dir
+
+    - name: Download awscliv2 installer
+      ansible.builtin.unarchive:
+        src: "{{ _awscli_url }}"
+        dest: "{{ temp_dir.path }}"
+        remote_src: true
+        creates: '{{ temp_dir.path }}/aws'
+      no_log: "{{ ansible_verbosity < 2 }}"
+
+    - name: Install AWS CLI
+      ansible.builtin.command: "{{ temp_dir.path }}/aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update"
+      register: awscli_install
+      changed_when: '"You can now run: /usr/local/bin/aws --version" in awscli_install.stdout'
+      become: true
+
+    - name: Execute AWS CLI version command
+      ansible.builtin.command: aws --version
+      changed_when: false
+
+    - name: Delete temporary directory
+      ansible.builtin.file:
+        path: "{{ temp_dir.path }}"
+        state: "absent"
