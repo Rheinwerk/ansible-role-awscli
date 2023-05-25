@@ -1,3 +1,7 @@
 ---
-_awscli_version: "2.11.21"
-_awscli_url: https://awscli.amazonaws.com/awscli-exe-linux-x86_64-{{ _awscli_version }}.zip
+_awscliv1_version: "1.27.140"
+_awscliv1_url: https://s3.amazonaws.com/aws-cli/awscli-bundle-{{ _awscliv1_version }}.zip
+
+
+_awscliv2_version: "2.11.21"
+_awscliv2_url: https://awscli.amazonaws.com/awscli-exe-linux-x86_64-{{ _awscliv2_version }}.zip

@@ -1,17 +1,85 @@
-- name: Check AWS CLI status
+- name: Check AWS CLIv1 status
   ansible.builtin.shell: |
     set -o pipefail
-    if ! aws --version | grep -c aws-cli/{{ _awscli_version }}; then
+    if ! /usr/local/aws/bin/aws --version | grep -c aws-cli/{{ _awscliv1_version }}; then
       echo 'install required'
     fi
   args:
     executable: /bin/bash
-  register: awscli_status
+  register: awscliv1_status
   changed_when: false
   tags: awscli
 
-- name: Install AWS CLI block
-  when: "'install required' in awscli_status.stdout"
+- name: Check AWS CLIv2 status
+  ansible.builtin.shell: |
+    set -o pipefail
+    if ! /usr/local/aws-cli/v2/current/bin/aws --version | grep -c aws-cli/{{ _awscliv2_version }}; then
+      echo 'install required'
+    fi
+  args:
+    executable: /bin/bash
+  register: awscliv2_status
+  changed_when: false
+  tags: awscli
+
+- name: Install AWS CLIv1 block
+  when: "'install required' in awscliv1_status.stdout"
+  tags: awscli
+  block:
+    - name: Install requirements
+      ansible.builtin.apt:
+        pkg:
+        - python-is-python3
+        - python3-venv
+
+    - name: Create temporary directory
+      ansible.builtin.tempfile:
+        path: "{{ executable_temp_dir | d(omit) }}"
+        state: directory
+        suffix: awscli
+      register: temp_dir
+
+    - name: Download awscliv1 installer
+      ansible.builtin.unarchive:
+        src: "{{ _awscliv1_url }}"
+        dest: "{{ temp_dir.path }}"
+        remote_src: true
+        creates: '{{ temp_dir.path }}/aws'
+      no_log: "{{ ansible_verbosity < 2 }}"
+
+    - name: Install AWS CLIv1
+      ansible.builtin.command: "{{ temp_dir.path }}/awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws"
+      register: awscli_install
+      changed_when: '"You can now run: /usr/local/bin/aws --version" in awscli_install.stdout'
+      become: true
+
+    # /usr/local/bin/aws is 0644 by default after install
+    - name: Chmod 755 AWS CLIv1
+      ansible.builtin.file:
+        path: /usr/local/bin/aws
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Execute AWS CLI version command
+      ansible.builtin.command: aws --version
+      changed_when: false
+      become: true
+
+    - name: Delete symlinks
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: "absent"
+      loop:
+        - /usr/local/bin/aws
+
+    - name: Delete temporary directory
+      ansible.builtin.file:
+        path: "{{ temp_dir.path }}"
+        state: "absent"
+
+- name: Install AWS CLIv2 block
+  when: "'install required' in awscliv2_status.stdout"
   tags: awscli
   block:
     - name: Install requirements
@@ -30,13 +98,13 @@
 
     - name: Download awscliv2 installer
       ansible.builtin.unarchive:
-        src: "{{ _awscli_url }}"
+        src: "{{ _awscliv2_url }}"
         dest: "{{ temp_dir.path }}"
         remote_src: true
         creates: '{{ temp_dir.path }}/aws'
       no_log: "{{ ansible_verbosity < 2 }}"
 
-    - name: Install AWS CLI
+    - name: Install AWS CLIv2
       ansible.builtin.command: "{{ temp_dir.path }}/aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update"
       register: awscli_install
       changed_when: '"You can now run: /usr/local/bin/aws --version" in awscli_install.stdout'
@@ -45,6 +113,15 @@
     - name: Execute AWS CLI version command
       ansible.builtin.command: aws --version
       changed_when: false
+      become: true
+
+    - name: Delete symlinks
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: "absent"
+      loop:
+        - /usr/local/bin/aws
+        - /usr/local/bin/aws_completer
 
     - name: Delete temporary directory
       ansible.builtin.file:
