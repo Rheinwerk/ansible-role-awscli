@@ -1,10 +1,7 @@
----
-warn_list:
+offline: true
+parseable: true
+
+skip_list:
   - name[template]
   - role-name
-  - yaml[truthy]
-
-# Ansible > 2.10
-skip_list:
-  - fqcn[action-core]
-  - fqcn[action]
+  - yaml

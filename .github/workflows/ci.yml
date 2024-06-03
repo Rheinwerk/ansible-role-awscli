@@ -15,7 +15,7 @@ jobs:
       container_supported: ${{ steps.get_min_ansible_container_version.outputs.result }}
     steps:
       - name: Check out the codebase
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Pull Lint image
         run: docker pull -q ghcr.io/rheinwerk/molecule:lint
@@ -59,7 +59,7 @@ jobs:
             experimental: true
 
     steps:
-      - uses: Rheinwerk/molecule@v1
+      - uses: Rheinwerk/molecule@v3
         with:
           distro: ${{ matrix.distro }}
           ansible_scenario: ${{ matrix.ansible_scenario }}
