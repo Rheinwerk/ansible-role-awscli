@@ -44,27 +44,20 @@ jobs:
         include:
           - distro: ubuntu-20.04
             ansible_scenario: ansible_current
-            test_type: unit
-            python_version: '3.8'
             experimental: false
           - distro: ubuntu-20.04
             ansible_scenario: ansible_next
-            test_type: unit
-            python_version: '3.8'
             experimental: true
           - distro: ubuntu-22.04
             ansible_scenario: ansible_latest
-            test_type: unit
-            python_version: '3.10'
             experimental: true
 
     steps:
-      - uses: Rheinwerk/molecule@v3
+      - uses: Rheinwerk/molecule@main
         with:
           distro: ${{ matrix.distro }}
           ansible_scenario: ${{ matrix.ansible_scenario }}
-          test_type: ${{ matrix.test_type }}
-          python_version: ${{ matrix.python_version }}
+
 
   release:
     name: Release
