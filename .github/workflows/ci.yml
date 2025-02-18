@@ -10,7 +10,7 @@ on:
 jobs:
   lint:
     name: Lint
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     outputs:
       container_supported: ${{ steps.get_min_ansible_container_version.outputs.result }}
     steps:
@@ -34,7 +34,7 @@ jobs:
 
   molecule:
     name: Molecule for Ansible ${{ matrix.ansible_scenario }} / ${{ matrix.distro }} / Python ${{ matrix.python_version }}
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     continue-on-error: ${{ matrix.experimental }}
     needs: lint
     if: needs.lint.outputs.container_supported != 'X'
@@ -42,13 +42,13 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - distro: ubuntu-20.04
+          - distro: debian-12
             ansible_scenario: ansible_current
             experimental: false
-          - distro: ubuntu-20.04
+          - distro: debian-12
             ansible_scenario: ansible_next
             experimental: true
-          - distro: ubuntu-22.04
+          - distro: debian-12
             ansible_scenario: ansible_latest
             experimental: true
 
@@ -58,10 +58,9 @@ jobs:
           distro: ${{ matrix.distro }}
           ansible_scenario: ${{ matrix.ansible_scenario }}
 
-
   release:
     name: Release
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     needs: molecule
     # https://github.com/actions/runner/issues/491#issuecomment-850884422
     if: |
