@@ -3,11 +3,12 @@
 extends: default
 
 rules:
+  octal-values: {forbid-implicit-octal: true, forbid-explicit-octal: true}
   braces: {max-spaces-inside: 1, level: error}
   brackets: {max-spaces-inside: 1, level: error}
   colons: {max-spaces-after: -1, level: error}
   commas: {max-spaces-after: -1, level: error}
-  comments: disable
+  comments: {min-spaces-from-content: 1}
   comments-indentation: disable
   document-start: disable
   empty-lines: {max: 3, level: error}
