@@ -44,7 +44,7 @@ jobs:
     runs-on: ubuntu-latest
     continue-on-error: ${{ matrix.experimental }}
     needs: lint
-    if: needs.lint.outputs.container_supported != 'X'
+    if: needs.lint.outputs.container_supported != 'X' && !startsWith(github.ref, 'refs/tags/')
     strategy:
       fail-fast: false
       matrix:
@@ -69,13 +69,13 @@ jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
-    needs: molecule
+    needs: lint
     # https://github.com/actions/runner/issues/491#issuecomment-850884422
-    if: |
-      always() &&
-      startsWith(github.event.ref, 'refs/tags/v') &&
-      (needs.molecule.result == 'success' || needs.molecule.result == 'skipped')
+    if: startsWith(github.ref, 'refs/tags/')
     steps:
+      - name: Check out the codebase
+        uses: actions/checkout@v4
+
       # Ansible ist bereits im Ubuntu Image enthalten, wir brauchen keine spezielle Version für den Galaxy Import: https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md
       # AnsibleLint config wird anscheinend ignoriert: https://github.com/ansible/galaxy/issues/2868
       - name: Trigger import of Role at Ansible Galaxy

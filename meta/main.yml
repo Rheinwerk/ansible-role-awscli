@@ -1,6 +1,5 @@
 galaxy_info:
-  author: Daniel Schneller
-  namespace: rheinwerk
+  author: rheinwerk
   role_name: awscli
   description: Installs Amazon AWS CLI
   company: Rheinwerk
