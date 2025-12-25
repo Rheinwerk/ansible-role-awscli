@@ -1,3 +1,4 @@
 ---
-_awscli_version: "2.11.21"
-_awscli_url: https://awscli.amazonaws.com/awscli-exe-linux-{{ ansible_architecture }}-{{ _awscli_version }}.zip
+_awscli_version: ""
+_awscli_pin: "{{ '-' ~ _awscli_version if _awscli_version | default('') | length > 0 else '' }}"
+_awscli_url: "https://awscli.amazonaws.com/awscli-exe-linux-{{ ansible_architecture }}{{ _awscli_pin }}.zip"
