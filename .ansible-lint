@@ -1,5 +1,4 @@
 offline: true
-parseable: true
 
 skip_list:
   - name[template]
