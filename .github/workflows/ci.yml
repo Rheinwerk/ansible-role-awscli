@@ -1,8 +1,6 @@
 ---
 # Lint, molecule and the Galaxy release on tags come from the reusable workflow in
 # Rheinwerk/molecule, see its README.md for the inputs.
-# TEMPORARY: @reusable-workflow and molecule_ref 'reusable-workflow' until Rheinwerk/molecule#18
-# is merged, then both become main.
 name: CI
 
 on:
@@ -23,7 +21,7 @@ on:
       molecule_ref:
         description: Ref of Rheinwerk/molecule to take the action and scenario from
         type: string
-        default: reusable-workflow
+        default: main
   pull_request:
   push:
   schedule:
@@ -31,12 +29,12 @@ on:
 
 jobs:
   ci:
-    uses: Rheinwerk/molecule/.github/workflows/role.yml@reusable-workflow
+    uses: Rheinwerk/molecule/.github/workflows/role.yml@main
     with:
       # format() turns the dispatch booleans into 'true'/'false' ('' on push, pull request and schedule)
       force_run: ${{ format('{0}', inputs.force_run) }}
       molecule_debug: ${{ format('{0}', inputs.molecule_debug) }}
       args: ${{ inputs.args }}
-      molecule_ref: ${{ inputs.molecule_ref || 'reusable-workflow' }}
+      molecule_ref: ${{ inputs.molecule_ref || 'main' }}
     # passes GALAXY_API_KEY for the release job
     secrets: inherit
