@@ -24,6 +24,11 @@ on:
         default: main
   pull_request:
   push:
+    # pull requests already run from the pull_request event
+    branches:
+      - master
+    tags:
+      - 'v*'
   schedule:
     - cron: '30 1 * * 3'
 
